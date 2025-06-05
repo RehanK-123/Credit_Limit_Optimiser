@@ -21,7 +21,7 @@ def random_salary(range):
     return uniform(int(a[0]) * 1000, int(a[1]) * 1000)    
 
 #loading the dataset     
-data = pd.read_csv("Credit_Card_Dataset.csv")
+data = pd.read_csv("Credit_Card_Dataset_New.csv")
 for i in data.columns:
     print(data[i].unique())
 #encoding the binary values of the Pay_on_time col with 1 and 0
