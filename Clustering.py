@@ -43,7 +43,7 @@ def hopkins_statistic(X):
     return H
 
 #making the clustering data
-data = pd.read_csv("Credit_Card_Dataset.csv")
+data = pd.read_csv("Credit_Card_Dataset_New.csv")
 cluster_data = data.filter(items= ["Credit_Limit", "Avg_Utilization_Ratio", "Pay_on_time", "Months_on_book", "Income_Category", "Dependent_count"])
 
 #decomposing the cluster data into 3 dimensional features 
