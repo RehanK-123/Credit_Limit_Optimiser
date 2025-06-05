@@ -41,5 +41,5 @@ for row in range(data["Income_Category"].shape[0]):
         
 #re-writing the dataset into our file
 # print(list)
-# data.to_csv("Credit_Card_Dataset.csv")
+# data.to_csv("Credit_Card_Dataset_New.csv")
 
