@@ -11,7 +11,7 @@ from sklearn.neighbors import LocalOutlierFactor, NearestNeighbors
 from sklearn.decomposition import PCA
 from sklearn.metrics import pairwise_distances
 
-data = pd.read_csv("Credit_Card_Dataset.csv")
+data = pd.read_csv("Credit_Card_Dataset_New.csv")
 predictor_data = data.loc[:, ["Avg_Utilization_Ratio", "Pay_on_time", "Income_Category", "Months_on_book" ,"Education_Level", "Card_Category", "Credit_Limit"]]
 predictor_data["Avg_Utilization_Ratio"] = np.log1p(predictor_data["Avg_Utilization_Ratio"])
 predictor_data.insert(2, "Interaction_term", predictor_data["Income_Category"] * predictor_data["Months_on_book"])
@@ -34,10 +34,13 @@ predictor_data["Card_Category"] = encoder_2.fit_transform(n).toarray()
 #scaling data so that neural network performs well 
 scaler = StandardScaler()
 predictor_data.iloc[:, : -1] = scaler.fit_transform(predictor_data.iloc[: , : -1])
-m = scaler 
+feature = scaler 
+pickle.dump(feature, open("feature_scaler", "wb"))
+
 array_3 = np.array(predictor_data["Credit_Limit"])
 f = array_3.reshape(-1, 1)
 predictor_data["Credit_Limit"]= scaler.fit_transform(f)
+pickle.dump(scaler, open("target_scaler", "wb"))
 # print(predictor_data)
 
 #splitting the dataset into train and test dataset 
@@ -61,11 +64,14 @@ regressor = xg.XGBRegressor( objective="reg:linear",
 regressor.fit(x_train, y_train)
 y_pred = regressor.predict(x_test)
 
+pickle.dump(regressor, open("predictor_model", "wb"))
+pickle.dump(encoder_1, open("ed_lvl", "wb"))
+pickle.dump(encoder_2, open("card_cat", "wb"))
 
-# print(mean_absolute_percentage_error(y_test, y_pred))
-# y_test = scaler.inverse_transform(np.array(y_test).reshape(-1, 1))
-# y_pred = scaler.inverse_transform(np.array(y_pred).reshape(-1, 1))
-# print(mean_absolute_percentage_error(y_pred, y_test))
+print(mean_absolute_percentage_error(y_test, y_pred))
+y_test = scaler.inverse_transform(np.array(y_test).reshape(-1, 1))
+y_pred = scaler.inverse_transform(np.array(y_pred).reshape(-1, 1))
+print(mean_absolute_percentage_error(y_pred, y_test))
 
 decomposer = PCA(n_components =1)
 x = decomposer.fit_transform(x_test)
