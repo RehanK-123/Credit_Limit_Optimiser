@@ -6,6 +6,8 @@ from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 data = pd.read_csv("Credit_Card_Dataset_New.csv")
 predictor_data = data.loc[:, ["Avg_Utilization_Ratio", "Pay_on_time", "Income_Category", "Months_on_book" ,"Education_Level", "Card_Category", "Credit_Limit"]]
 predictor_data["Avg_Utilization_Ratio"] = np.log1p(predictor_data["Avg_Utilization_Ratio"])
@@ -49,6 +51,14 @@ explainer = shap.Explainer(model)
 
 values = explainer(x_test)
 print(values)
+predictor_data = predictor_data.dropna()
 
+vif_data = pd.DataFrame()
+vif_data["feature"] = predictor_data.columns
+
+vif_data["VIF"] = [variance_inflation_factor(predictor_data.values, i)
+                          for i in range(len(predictor_data.columns))]
+
+print(vif_data)
 shap.plots.waterfall(values[0], show=False)
 plt.savefig("shap_waterfall.png", bbox_inches="tight")
