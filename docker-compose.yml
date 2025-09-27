@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    container_name: credit_limit_optimiser_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    # env_file:
+    #   - .venv
+    depends_on:
+      - datasets
+
+  datasets:
+    image: busybox
+    container_name: credit_limit_optimiser_datasets
+    volumes:
+      - ./Credit_Card_Dataset_New.csv:/app/data
+    command: /bin/sh -c "while true; do sleep 3600; done"
